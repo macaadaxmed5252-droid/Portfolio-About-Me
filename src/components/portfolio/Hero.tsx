@@ -1,8 +1,20 @@
-import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowDown, Github, Linkedin, Twitter, Code, Database, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 
 const Hero = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end start"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, 50]);
+
+  // Shaqada kugu geynaysa qaybta Projects
   const scrollToProjects = () => {
     const element = document.querySelector("#projects");
     if (element) {
@@ -10,171 +22,142 @@ const Hero = () => {
     }
   };
 
-  return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
-    >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/20" />
+  const socialLinks = [
+    { icon: Github, href: "https://github.com/macaadaxmed5252-droid", color: "hover:text-primary" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/mu-aad-ahmed-5344173aa", color: "hover:text-[#0077b5]" },
+    { icon: Twitter, href: "https://x.com/king_maalid", color: "hover:text-[#1da1f2]" },
+  ];
 
-      {/* Geometric wireframe accents */}
-      <div className="absolute inset-0 overflow-hidden">
-        <svg
-          className="absolute top-20 left-10 w-64 h-64 opacity-10"
-          viewBox="0 0 100 100"
-        >
-          <polygon
-            points="50,10 90,90 10,90"
-            fill="none"
-            stroke="hsl(var(--primary))"
-            strokeWidth="0.5"
-          />
-        </svg>
-        <svg
-          className="absolute bottom-40 right-20 w-48 h-48 opacity-10"
-          viewBox="0 0 100 100"
-        >
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
-            fill="none"
-            stroke="hsl(var(--primary))"
-            strokeWidth="0.5"
-          />
-        </svg>
+  return (
+    <section ref={targetRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505] selection:bg-primary/30">
+      
+      {/* Background Gradient */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)]" />
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px]" />
       </div>
 
-      {/* Floating 3D glass spheres */}
-      <motion.div
-        className="absolute top-32 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 backdrop-blur-xl border border-primary/20 animate-float glow-blue"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-      />
-      <motion.div
-        className="absolute top-60 left-16 w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-transparent backdrop-blur-lg border border-primary/10 animate-float-delayed"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.7, duration: 0.8 }}
-      />
-      <motion.div
-        className="absolute bottom-32 left-1/4 w-20 h-20 rounded-full bg-gradient-to-br from-primary/25 to-primary/5 backdrop-blur-xl border border-primary/15 animate-float-slow"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.9, duration: 0.8 }}
-      />
-      <motion.div
-        className="absolute top-1/3 right-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-transparent backdrop-blur-lg border border-primary/10 animate-float"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.1, duration: 0.8 }}
-      />
-
-      {/* Content */}
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+      <motion.div style={{ opacity, scale, y }} className="container mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
           {/* Text Content */}
-          <motion.div
-            className="flex-1 text-center lg:text-left"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <motion.p
-              className="text-primary font-semibold text-lg mb-4"
+          <div className="text-center lg:text-left order-2 lg:order-1">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-white/80 text-xs font-mono tracking-widest uppercase">Available for new projects</span>
+            </motion.div>
+
+            <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
+              className="text-5xl md:text-8xl font-black tracking-tighter text-white mb-6 leading-[0.9]"
             >
-              Welcome to my portfolio
-            </motion.p>
-            <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-foreground leading-tight mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              HAY! I'M{" "}
-              <span className="text-gradient">MUAD</span>
-              <br />
-              I'M A{" "}
-              <span className="text-primary">FULL STACK</span>
-              <br />
-              DEVELOPER
+              HAY, I'M <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-purple-500">
+                MUAD AHMED
+              </span>
             </motion.h1>
-            <motion.p
-              className="text-muted-foreground text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-gray-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
             >
-              Crafting exceptional digital experiences with modern technologies.
-              From concept to deployment, I bring ideas to life.
+              Architecting <span className="text-white font-medium">Scalable Ecosystems</span> & 
+              Immersive User Experiences. I turn complex logic into fluid digital interfaces.
             </motion.p>
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-5 items-center"
             >
-              <Button
+              {/* Badankan hadda wuxuu ku geynayaa Projects */}
+              <Button 
                 onClick={scrollToProjects}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 rounded-full font-semibold text-lg"
+                size="lg" 
+                className="rounded-full bg-primary hover:bg-primary/90 text-black font-bold px-10 py-7 text-lg shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all duration-300 active:scale-95"
               >
-                View My Work
+                Start a Project
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="border-border hover:bg-secondary text-foreground px-8 py-6 rounded-full font-semibold text-lg"
-              >
-                Contact Me
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Profile Image */}
-          <motion.div
-            className="flex-1 flex justify-center lg:justify-end"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-          >
-            <div className="relative">
-              {/* Glow effect behind image */}
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-110" />
               
-              {/* Profile image container */}
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary/30 glass-card">
-                <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
-                  <span className="text-6xl font-heading font-bold text-primary">M</span>
-                </div>
+              <div className="flex items-center gap-4 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm">
+                {socialLinks.map((link, i) => (
+                  <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className={`text-gray-400 transition-all duration-300 ${link.color} hover:scale-125`}>
+                    <link.icon size={22} />
+                  </a>
+                ))}
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
+            </motion.div>
+          </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2 }}
+          {/* Profile Visual Section */}
+          <div className="relative order-1 lg:order-2 flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="relative w-72 h-72 md:w-[450px] md:h-[450px]"
+            >
+              {/* Animated Rings */}
+              <div className="absolute inset-0 border border-primary/20 rounded-[3rem] rotate-12 animate-spin-slow" />
+              <div className="absolute inset-0 border border-blue-500/20 rounded-[3rem] -rotate-12 animate-spin-slow-reverse" />
+              
+              {/* Main Image Container */}
+              <div className="absolute inset-4 rounded-[2.5rem] overflow-hidden bg-zinc-900 border border-white/10 shadow-2xl group">
+                <img 
+                  src="/myImage.png" 
+                  alt="Muad" 
+                  className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-100" 
+                  // Halkan grayscale-kii waa laga saaray si midabku u muuqdo
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              </div>
+
+              {/* Floating Tech Badges */}
+              <TechBadge icon={Code} label="Frontend" position="top-0 -right-4" delay={0.2} />
+              <TechBadge icon={Database} label="Backend" position="bottom-10 -left-8" delay={0.4} />
+              <TechBadge icon={Globe} label="FullStack" position="top-1/2 -right-12" delay={0.6} />
+            </motion.div>
+          </div>
+
+        </div>
+      </motion.div>
+
+      {/* Scroll Down Hint */}
+      <motion.div 
+        onClick={scrollToProjects}
+        animate={{ y: [0, 12, 0] }} 
+        transition={{ repeat: Infinity, duration: 2 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-primary/50 cursor-pointer hover:text-primary transition-colors"
       >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="text-muted-foreground cursor-pointer"
-          onClick={scrollToProjects}
-        >
-          <ArrowDown size={24} />
-        </motion.div>
+        <ArrowDown size={30} />
       </motion.div>
     </section>
   );
 };
+
+const TechBadge = ({ icon: Icon, label, position, delay }: any) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay, duration: 0.5 }}
+    className={`absolute ${position} z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-black/80 border border-white/10 backdrop-blur-xl shadow-xl hover:border-primary/50 transition-colors cursor-default`}
+  >
+    <Icon size={16} className="text-primary" />
+    <span className="text-[10px] font-mono font-bold text-white uppercase tracking-tighter">{label}</span>
+  </motion.div>
+);
 
 export default Hero;

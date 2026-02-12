@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Layers, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -7,84 +7,62 @@ const projects = [
   {
     id: 1,
     title: "E-Commerce Platform",
-    description:
-      "A modern e-commerce solution with real-time inventory, secure payments, and an intuitive admin dashboard.",
-    image: "/placeholder.svg",
-    tags: ["React", "Node.js", "PostgreSQL", "Stripe"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
+    description: "A high-performance e-commerce solution with real-time inventory and secure payments control.",
+    image: "/E-Commerce.png",
+    tags: ["React", "Node.js", "MongoDB", "Tailwind"],
+    liveUrl: "https://full-project-e-commerce.vercel.app/",
+    githubUrl: "https://github.com/macaadaxmed5252-droid/FULL-PROJECT-E-Commerce-.git",
+    color: "from-blue-500/20 to-cyan-500/20",
   },
   {
     id: 2,
-    title: "Task Management App",
-    description:
-      "A collaborative task management tool with real-time updates, team features, and productivity analytics.",
-    image: "/placeholder.svg",
-    tags: ["TypeScript", "React", "Supabase", "Tailwind"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
+    title: "Professional Blog",
+    description: "Fully responsive blog platform with advanced admin dashboard and article management.",
+    image: "/Blog.png",
+    tags: ["JavaScript", "React", "Backend", "Tailwind"],
+    liveUrl: "https://professional-blog-three.vercel.app/",
+    githubUrl: "https://github.com/macaadaxmed5252-droid/Professional-Blog-.git",
+    color: "from-purple-500/20 to-pink-500/20",
   },
   {
     id: 3,
-    title: "Portfolio Website",
-    description:
-      "A creative portfolio showcasing design work with smooth animations and interactive elements.",
-    image: "/placeholder.svg",
-    tags: ["React", "Framer Motion", "Tailwind CSS"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
+    title: "Real Estate Platform",
+    description: "is a modern web app for browsing, buying, and renting properties with an admin dashboard for easy management.",
+    image: "/Real-State.png",
+    tags: ["JavaScript", "React", "Backend", "Tailwind.css"],
+    liveUrl: "https://somali-estate.vercel.app/",
+    githubUrl: "https://github.com/macaadaxmed5252-droid/Somali-Estate.git",
+    color: "from-purple-500/20 to-pink-500/20",
   },
-  {
-    id: 4,
-    title: "SaaS Dashboard",
-    description:
-      "An analytics dashboard with data visualization, user management, and subscription handling.",
-    image: "/placeholder.svg",
-    tags: ["Next.js", "Prisma", "Chart.js", "Auth0"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
-  },
-  {
-    id: 5,
-    title: "Social Media App",
-    description:
-      "A social platform with real-time messaging, post feeds, and user engagement features.",
-    image: "/placeholder.svg",
-    tags: ["React Native", "Firebase", "Redux"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
-  },
-  {
-    id: 6,
-    title: "AI Writing Assistant",
-    description:
-      "An AI-powered writing tool that helps users generate and refine content effortlessly.",
-    image: "/placeholder.svg",
-    tags: ["Python", "OpenAI", "FastAPI", "React"],
-    liveUrl: "https://your-project.vercel.app",
-    githubUrl: "#",
-  },
+  // Ku dar mashaariicda kale halkan...
 ];
 
 const Projects = () => {
   return (
-    <section id="projects" className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/5 to-background" />
+    <section id="projects" className="py-32 relative overflow-hidden bg-background">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full -z-10" />
 
       <div className="container mx-auto px-6 relative z-10">
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
-            Recent <span className="text-primary">Projects</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
+            <Layers size={14} className="text-primary" />
+            <span className="text-[10px] font-mono font-bold text-primary uppercase tracking-widest">
+              My Portfolio
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground mb-6">
+            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Projects</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            A showcase of my latest work. Each project represents a unique challenge and solution.
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            Halkan ka fiiri qaar ka mid ah mashaariicda aan dhisay, kuwaas oo isugu jira xalal ganacsi iyo tijaabooyin farsamo.
           </p>
         </motion.div>
 
@@ -97,82 +75,86 @@ const Projects = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              className="group"
+              className="group relative"
             >
-              <div className="glass-card rounded-2xl overflow-hidden h-full flex flex-col">
-                {/* Project Image */}
-                <div className="relative h-48 bg-secondary overflow-hidden">
+              {/* Card Container */}
+              <div className="relative h-full bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden hover:border-primary/30 transition-all duration-500 shadow-2xl flex flex-col">
+                
+                {/* 1. Image Area with Overlay */}
+                <div className="relative h-60 overflow-hidden">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" />
+                  {/* Gradient Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
                   
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 bg-background/90 rounded-full hover:bg-background transition-colors"
-                    >
-                      <ExternalLink className="w-5 h-5 text-primary" />
+                  {/* Floating Action Buttons */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500">
+                    <a href={project.githubUrl} target="_blank" className="p-3 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white hover:bg-primary hover:text-black transition-all">
+                      <Github size={18} />
                     </a>
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 bg-background/90 rounded-full hover:bg-background transition-colors"
-                    >
-                      <Github className="w-5 h-5 text-primary" />
+                    <a href={project.liveUrl} target="_blank" className="p-3 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white hover:bg-primary hover:text-black transition-all">
+                      <ExternalLink size={18} />
                     </a>
                   </div>
                 </div>
 
-                {/* Project Content */}
-                <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="text-xl font-heading font-semibold text-foreground mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4 flex-1">
+                {/* 2. Content Area */}
+                <div className="p-8 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                      {project.title}
+                    </h3>
+                    <ArrowUpRight className="text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">
                     {project.description}
                   </p>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  {/* Tech Tags */}
+                  <div className="flex flex-wrap gap-2 mb-8">
                     {project.tags.map((tag) => (
                       <Badge
                         key={tag}
-                        variant="secondary"
-                        className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                        className="bg-zinc-800/50 text-[10px] text-zinc-400 border-none px-3 py-1 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors"
                       >
                         {tag}
                       </Badge>
                     ))}
                   </div>
 
-                  {/* View Live Button */}
+                  {/* Main Action Button */}
                   <Button
                     asChild
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold group"
+                    className="w-full bg-white text-black hover:bg-primary hover:text-white rounded-2xl py-6 font-bold transition-all duration-300 group/btn"
                   >
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2"
-                    >
-                      View Live
-                      <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <a href={project.liveUrl} target="_blank" className="flex items-center justify-center gap-2">
+                      Live Preview
+                      <ExternalLink size={16} className="group-hover/btn:rotate-12 transition-transform" />
                     </a>
                   </Button>
                 </div>
               </div>
+
+              {/* Background Glow on Hover */}
+              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
             </motion.div>
           ))}
         </div>
+
+        {/* View More Call-to-action */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-20 text-center"
+        >
+          <p className="text-muted-foreground font-mono text-sm">
+            Want to see more? <a href="https://github.com/macaadaxmed5252-droid" className="text-primary hover:underline font-bold">Explore my GitHub</a>
+          </p>
+        </motion.div>
       </div>
     </section>
   );

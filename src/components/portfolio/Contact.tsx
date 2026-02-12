@@ -1,150 +1,157 @@
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, Github, Linkedin, Twitter } from "lucide-react";
+import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Send, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const contactInfo = [
   {
     icon: Mail,
-    label: "Email",
-    value: "hello@muad.dev",
-    href: "mailto:hello@muad.dev",
+    label: "Email Me",
+    value: "macaadaxmed5252@gmail.com",
+    href: "mailto:macaadaxmed5252@gmail.com",
+    color: "bg-blue-500/10 text-blue-500",
   },
   {
     icon: Phone,
-    label: "Phone",
-    value: "+1 (555) 123-4567",
-    href: "tel:+15551234567",
+    label: "Call Me",
+    value: "+252 614395252",
+    href: "tel:+252614395252",
+    color: "bg-green-500/10 text-green-500",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Available Worldwide",
+    value: "Mogadishu, Somalia",
     href: "#",
+    color: "bg-red-500/10 text-red-500",
   },
 ];
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Github, href: "https://github.com/macaadaxmed5252-droid", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/mu-aad-ahmed-5344173aa", label: "LinkedIn" },
+  { icon: Twitter, href: "https://x.com/king_maalid", label: "Twitter" },
 ];
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/10 to-background" />
-
-      {/* Decorative elements */}
-      <motion.div
-        className="absolute top-20 right-20 w-32 h-32 rounded-full bg-primary/10 blur-3xl"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ repeat: Infinity, duration: 5 }}
-      />
-      <motion.div
-        className="absolute bottom-20 left-20 w-40 h-40 rounded-full bg-primary/10 blur-3xl"
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ repeat: Infinity, duration: 5, delay: 2 }}
-      />
+    <section id="contact" className="py-32 relative overflow-hidden bg-background">
+      {/* 1. Background Effects */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px]" />
+      </div>
 
       <div className="container mx-auto px-6 relative z-10">
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
-            Let's <span className="text-primary">Connect</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Have a project in mind? Let's work together to create something amazing.
-          </p>
+          <span className="text-primary font-mono text-sm tracking-widest uppercase mb-3 block italic font-bold">
+            {"Connect with me"}
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-6 leading-tight">
+      READY TO START YOUR <br />
+      <span className="relative inline-block">
+        <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
+          NEXT PROJECT ?
+        </span>
+        {/* Underline futuristic ah */}
+        <motion.div 
+          initial={{ width: 0 }}
+          whileInView={{ width: "100%" }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="absolute bottom-1 left-0 h-1.5 bg-primary/30 rounded-full -z-0"
+        />
+      </span>
+    </h2>
+          <div className="h-1 w-20 bg-primary mx-auto rounded-full" />
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="glass-card p-8 rounded-2xl h-full">
-                <h3 className="text-2xl font-heading font-semibold text-foreground mb-6">
-                  Get in Touch
-                </h3>
-                <div className="space-y-6">
-                  {contactInfo.map((info) => (
-                    <a
-                      key={info.label}
-                      href={info.href}
-                      className="flex items-center gap-4 group"
-                    >
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <info.icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">{info.label}</p>
-                        <p className="text-foreground font-medium group-hover:text-primary transition-colors">
-                          {info.value}
-                        </p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-
-                {/* Social Links */}
-                <div className="mt-8 pt-8 border-t border-border">
-                  <p className="text-muted-foreground mb-4">Follow me on</p>
-                  <div className="flex gap-4">
-                    {socialLinks.map((social) => (
-                      <motion.a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ y: -3, scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center hover:bg-primary/20 transition-colors"
-                      >
-                        <social.icon className="w-5 h-5 text-foreground" />
-                      </motion.a>
-                    ))}
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-5 gap-8">
+          
+          {/* 2. Contact Cards Section (Left Side) */}
+          <div className="lg:col-span-3 grid gap-4">
+            {contactInfo.map((info, index) => (
+              <motion.a
+                key={info.label}
+                href={info.href}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative bg-card/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center justify-between hover:border-primary/50 transition-all duration-500 shadow-sm"
+              >
+                <div className="flex items-center gap-6">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500 ${info.color}`}>
+                    <info.icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1">{info.label}</p>
+                    <p className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{info.value}</p>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+              </motion.a>
+            ))}
 
-            {/* CTA Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+            {/* Social Connect Bar */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-4 p-6 bg-primary/5 rounded-3xl border border-primary/10 flex items-center justify-between"
             >
-              <div className="glass-card p-8 rounded-2xl h-full flex flex-col justify-center text-center">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Mail className="w-10 h-10 text-primary" />
-                </div>
-                <h3 className="text-2xl font-heading font-semibold text-foreground mb-4">
-                  Ready to Start a Project?
-                </h3>
-                <p className="text-muted-foreground mb-8">
-                  I'm always open to discussing new projects, creative ideas, or opportunities
-                  to be part of your visions.
-                </p>
-                <Button
-                  asChild
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 rounded-full font-semibold text-lg"
-                >
-                  <a href="mailto:hello@muad.dev">Send Me an Email</a>
-                </Button>
+              <span className="font-semibold text-sm">Follow the Journey:</span>
+              <div className="flex gap-4">
+                {socialLinks.map((social) => (
+                  <a key={social.label} href={social.href} target="_blank" className="text-muted-foreground hover:text-primary transition-colors hover:scale-110">
+                    <social.icon size={22} />
+                  </a>
+                ))}
               </div>
             </motion.div>
           </div>
+
+          {/* 3. CTA Card (Right Side) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="lg:col-span-2 relative group"
+          >
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000" />
+            <div className="relative h-full bg-zinc-900/50 backdrop-blur-2xl border border-white/10 p-10 rounded-[2.5rem] flex flex-col items-center text-center justify-center overflow-hidden">
+              
+              {/* Decorative SVG Icon */}
+              <div className="relative mb-8">
+                <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+                <div className="relative w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                  <Send className="w-10 h-10 text-primary animate-pulse" />
+                </div>
+              </div>
+
+              <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
+                Have a Vision? <br /> Let's Talk!
+              </h3>
+              <p className="text-gray-400 mb-10 text-sm leading-relaxed">
+                Haddii aad rabto inaad i weydiiso su'aal ama aad rabto inaan wada shaqeyno, ha ka waaban inaad farriin ii soo dirto.
+              </p>
+
+              <Button
+                asChild
+                className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-8 rounded-2xl text-lg group overflow-hidden"
+              >
+                <a href="mailto:macaadaxmed5252@gmail.com" className="flex items-center justify-center gap-2">
+                  Send Me a Message
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </Button>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
