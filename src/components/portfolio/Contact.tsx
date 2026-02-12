@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Send, ArrowRight } from "lucide-react";
+import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Send, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const contactInfo = [
@@ -8,21 +8,21 @@ const contactInfo = [
     label: "Email Me",
     value: "macaadaxmed5252@gmail.com",
     href: "mailto:macaadaxmed5252@gmail.com",
-    color: "bg-blue-500/10 text-blue-500",
+    color: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   },
   {
     icon: Phone,
     label: "Call Me",
     value: "+252 614395252",
     href: "tel:+252614395252",
-    color: "bg-green-500/10 text-green-500",
+    color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   },
   {
     icon: MapPin,
     label: "Location",
     value: "Mogadishu, Somalia",
     href: "#",
-    color: "bg-red-500/10 text-red-500",
+    color: "bg-purple-500/10 text-purple-400 border-purple-500/20",
   },
 ];
 
@@ -34,11 +34,23 @@ const socialLinks = [
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-32 relative overflow-hidden bg-background">
-      {/* 1. Background Effects */}
+    <section id="contact" className="py-32 relative overflow-hidden bg-[#0a0c14]">
+      
+      {/* --- BACKGROUND DYNAMIC EFFECTS --- */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0c14] via-[#111827] to-[#0a0c14]" />
+        
+        {/* Animated Mesh Blobs */}
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.15, 0.1] }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 blur-[140px] rounded-full" 
+        />
+        <motion.div 
+          animate={{ scale: [1.1, 1, 1.1], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 12, repeat: Infinity }}
+          className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full" 
+        />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -47,33 +59,28 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-24"
         >
-          <span className="text-primary font-mono text-sm tracking-widest uppercase mb-3 block italic font-bold">
-            {"Connect with me"}
-          </span>
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-6 leading-tight">
-      READY TO START YOUR <br />
-      <span className="relative inline-block">
-        <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
-          NEXT PROJECT ?
-        </span>
-        {/* Underline futuristic ah */}
-        <motion.div 
-          initial={{ width: 0 }}
-          whileInView={{ width: "100%" }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute bottom-1 left-0 h-1.5 bg-primary/30 rounded-full -z-0"
-        />
-      </span>
-    </h2>
-          <div className="h-1 w-20 bg-primary mx-auto rounded-full" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
+            <Sparkles size={14} className="text-primary" />
+            <span className="text-[10px] font-bold text-slate-400 tracking-[0.4em] uppercase">
+              Get In Touch
+            </span>
+          </div>
+          
+          <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-white mb-8 leading-tight">
+            LET'S BUILD THE <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-emerald-400">
+              FUTURE TOGETHER
+            </span>
+          </h2>
+          <div className="h-1.5 w-24 bg-primary mx-auto rounded-full shadow-[0_0_20px_rgba(var(--primary),0.5)]" />
         </motion.div>
 
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-5 gap-8">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-5 gap-10">
           
-          {/* 2. Contact Cards Section (Left Side) */}
-          <div className="lg:col-span-3 grid gap-4">
+          {/* 1. Contact Info (Left) */}
+          <div className="lg:col-span-3 space-y-4">
             {contactInfo.map((info, index) => (
               <motion.a
                 key={info.label}
@@ -82,18 +89,20 @@ const Contact = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative bg-card/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center justify-between hover:border-primary/50 transition-all duration-500 shadow-sm"
+                className="group relative bg-white/[0.02] backdrop-blur-3xl border border-white/5 p-8 rounded-[2.5rem] flex items-center justify-between hover:bg-white/[0.05] hover:border-white/20 transition-all duration-500"
               >
                 <div className="flex items-center gap-6">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 duration-500 ${info.color}`}>
-                    <info.icon className="w-6 h-6" />
+                  <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg ${info.color}`}>
+                    <info.icon className="w-7 h-7" />
                   </div>
                   <div>
-                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1">{info.label}</p>
-                    <p className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{info.value}</p>
+                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">{info.label}</p>
+                    <p className="text-xl font-bold text-white group-hover:text-primary transition-colors">{info.value}</p>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-4 transition-all duration-500">
+                  <ArrowRight className="w-5 h-5 text-primary" />
+                </div>
               </motion.a>
             ))}
 
@@ -101,13 +110,17 @@ const Contact = () => {
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="mt-4 p-6 bg-primary/5 rounded-3xl border border-primary/10 flex items-center justify-between"
+              className="mt-6 p-8 bg-primary/[0.02] rounded-[2.5rem] border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-6"
             >
-              <span className="font-semibold text-sm">Follow the Journey:</span>
+              <span className="font-bold text-slate-400 text-lg">Digital Footprint:</span>
               <div className="flex gap-4">
                 {socialLinks.map((social) => (
-                  <a key={social.label} href={social.href} target="_blank" className="text-muted-foreground hover:text-primary transition-colors hover:scale-110">
+                  <a 
+                    key={social.label} 
+                    href={social.href} 
+                    target="_blank" 
+                    className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/10 transition-all hover:-translate-y-1 border border-white/5"
+                  >
                     <social.icon size={22} />
                   </a>
                 ))}
@@ -115,38 +128,37 @@ const Contact = () => {
             </motion.div>
           </div>
 
-          {/* 3. CTA Card (Right Side) */}
+          {/* 2. CTA Card (Right) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             className="lg:col-span-2 relative group"
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000" />
-            <div className="relative h-full bg-zinc-900/50 backdrop-blur-2xl border border-white/10 p-10 rounded-[2.5rem] flex flex-col items-center text-center justify-center overflow-hidden">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-500 rounded-[3rem] blur opacity-10 group-hover:opacity-20 transition duration-1000" />
+            <div className="relative h-full bg-[#111827]/50 backdrop-blur-3xl border border-white/10 p-12 rounded-[3rem] flex flex-col items-center text-center justify-center overflow-hidden">
               
-              {/* Decorative SVG Icon */}
-              <div className="relative mb-8">
-                <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
-                <div className="relative w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
-                  <Send className="w-10 h-10 text-primary animate-pulse" />
+              <div className="relative mb-10">
+                <div className="absolute inset-0 bg-primary/40 blur-[50px] rounded-full animate-pulse" />
+                <div className="relative w-28 h-28 bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-12 transition-transform duration-500">
+                  <Send className="w-12 h-12 text-black" />
                 </div>
               </div>
 
-              <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
-                Have a Vision? <br /> Let's Talk!
+              <h3 className="text-4xl font-black text-white mb-6 tracking-tighter">
+                HAVE A VISION?<br />LET'S TALK!
               </h3>
-              <p className="text-gray-400 mb-10 text-sm leading-relaxed">
+              <p className="text-slate-400 mb-12 text-base leading-relaxed font-light">
                 Haddii aad rabto inaad i weydiiso su'aal ama aad rabto inaan wada shaqeyno, ha ka waaban inaad farriin ii soo dirto.
               </p>
 
               <Button
                 asChild
-                className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-8 rounded-2xl text-lg group overflow-hidden"
+                className="w-full bg-white text-black hover:bg-primary hover:text-black font-black py-8 rounded-2xl text-lg transition-all duration-500 shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
               >
-                <a href="mailto:macaadaxmed5252@gmail.com" className="flex items-center justify-center gap-2">
-                  Send Me a Message
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <a href="mailto:macaadaxmed5252@gmail.com" className="flex items-center justify-center gap-3">
+                  Send Message
+                  <ArrowRight size={20} />
                 </a>
               </Button>
             </div>

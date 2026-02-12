@@ -1,10 +1,101 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Twitter, Code, Database, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 const Hero = () => {
   const targetRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Plexus Effect Logic (The Rise Academy Style)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let particles: any[] = [];
+    const particleCount = 100; // Tirada dhibcaha
+    let mouse = { x: null, y: null, radius: 150 };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener("mousemove", (e: any) => {
+      mouse.x = e.x;
+      mouse.y = e.y;
+    });
+
+    class Particle {
+      x: number; y: number; dx: number; dy: number; size: number;
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.dx = (Math.random() - 0.5) * 1;
+        this.dy = (Math.random() - 0.5) * 1;
+        this.size = Math.random() * 2 + 1;
+      }
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
+
+        if (mouse.x && mouse.y) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius) {
+            this.x -= dx / 50;
+            this.y -= dy / 50;
+          }
+        }
+      }
+      draw() {
+        if (!ctx) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 243, 255, 0.7)"; // Cyan Glow
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#00f3ff";
+        ctx.fill();
+      }
+    }
+
+    const init = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        for (let j = index + 1; j < particles.length; j++) {
+          const dist = Math.hypot(p.x - particles[j].x, p.y - particles[j].y);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 243, 255, ${1 - dist / 120})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      });
+      requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("resize", resize);
+    resize();
+    init();
+    animate();
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end start"],
@@ -14,12 +105,9 @@ const Hero = () => {
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 50]);
 
-  // Shaqada kugu geynaysa qaybta Projects
   const scrollToProjects = () => {
     const element = document.querySelector("#projects");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    if (element) element.scrollIntoView({ behavior: "smooth" });
   };
 
   const socialLinks = [
@@ -31,9 +119,12 @@ const Hero = () => {
   return (
     <section ref={targetRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505] selection:bg-primary/30">
       
-      {/* Background Gradient */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)]" />
+      {/* 1. THE NEW PLEXUS BACKGROUND (RISE STYLE) */}
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none opacity-60" />
+
+      {/* 2. BACKGROUND GRADIENTS (FOR EXTRA GLOW) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,0.5)_0%,rgba(5,5,5,1)_100%)]" />
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px]" />
       </div>
@@ -73,8 +164,7 @@ const Hero = () => {
               transition={{ delay: 0.4 }}
               className="text-gray-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
             >
-              Engineering the future of digital interaction <span className="text-white font-medium">I specialize </span>  
-              in architecting scalable <span className="text-white font-medium">Backends</span> and crafting immersive <span className="text-white font-medium">frontends</span> to deliver world-class user experiences.
+              Engineering the future of digital interaction <span className="text-white font-medium">I specialize</span> in architecting scalable <span className="text-white font-medium">Backends</span> and crafting immersive <span className="text-white font-medium">frontends</span> to deliver world-class user experiences.
             </motion.p>
 
             <motion.div 
@@ -83,11 +173,10 @@ const Hero = () => {
               transition={{ delay: 0.6 }}
               className="flex flex-wrap justify-center lg:justify-start gap-5 items-center"
             >
-              {/* Badankan hadda wuxuu ku geynayaa Projects */}
               <Button 
                 onClick={scrollToProjects}
                 size="lg" 
-                className="rounded-full bg-primary hover:bg-primary/90 text-black font-bold px-10 py-7 text-lg shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all duration-300 active:scale-95"
+                className="rounded-full bg-primary hover:bg-primary/90 text-black font-bold px-10 py-7 text-lg shadow-[0_0_30px_rgba(var(--primary),0.3)] transition-all duration-300 active:scale-95"
               >
                 Start a Project
               </Button>
@@ -110,22 +199,18 @@ const Hero = () => {
               transition={{ duration: 1 }}
               className="relative w-72 h-72 md:w-[450px] md:h-[450px]"
             >
-              {/* Animated Rings */}
-              <div className="absolute inset-0 border border-primary/20 rounded-[3rem] rotate-12 animate-spin-slow" />
-              <div className="absolute inset-0 border border-blue-500/20 rounded-[3rem] -rotate-12 animate-spin-slow-reverse" />
+              <div className="absolute inset-0 border border-primary/40 rounded-[3rem] rotate-12 animate-spin-slow" />
+              <div className="absolute inset-0 border border-blue-500/40 rounded-[3rem] -rotate-12 animate-spin-slow-reverse" />
               
-              {/* Main Image Container */}
               <div className="absolute inset-4 rounded-[2.5rem] overflow-hidden bg-zinc-900 border border-white/10 shadow-2xl group">
                 <img 
                   src="/myImage.png" 
                   alt="Muad" 
                   className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-100" 
-                  // Halkan grayscale-kii waa laga saaray si midabku u muuqdo
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               </div>
 
-              {/* Floating Tech Badges */}
               <TechBadge icon={Code} label="Frontend" position="top-0 -right-4" delay={0.2} />
               <TechBadge icon={Database} label="Backend" position="bottom-10 -left-8" delay={0.4} />
               <TechBadge icon={Globe} label="FullStack" position="top-1/2 -right-12" delay={0.6} />
@@ -135,7 +220,6 @@ const Hero = () => {
         </div>
       </motion.div>
 
-      {/* Scroll Down Hint */}
       <motion.div 
         onClick={scrollToProjects}
         animate={{ y: [0, 12, 0] }} 
