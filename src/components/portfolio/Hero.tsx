@@ -73,8 +73,8 @@ const Hero = () => {
               transition={{ delay: 0.4 }}
               className="text-gray-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
             >
-              Architecting <span className="text-white font-medium">Scalable Ecosystems</span> & 
-              Immersive User Experiences. I turn complex logic into fluid digital interfaces.
+              Engineering the future of digital interaction <span className="text-white font-medium">I specialize </span>  
+              in architecting scalable <span className="text-white font-medium">Backends</span> and crafting immersive <span className="text-white font-medium">frontends</span> to deliver world-class user experiences.
             </motion.p>
 
             <motion.div 
