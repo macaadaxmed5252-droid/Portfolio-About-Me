@@ -62,7 +62,8 @@ const Projects = () => {
             Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Projects</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            Halkan ka fiiri qaar ka mid ah mashaariicda aan dhisay, kuwaas oo isugu jira xalal ganacsi iyo tijaabooyin farsamo.
+            Check out some of the projects I have built here, which include a mix of business solutions and technical experiments.
+
           </p>
         </motion.div>
 
