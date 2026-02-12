@@ -3,16 +3,76 @@ import { Cpu, Globe, Zap, Shield, Rocket } from "lucide-react";
 
 // Waxaan ku daray icons tayo leh si ay ugu ekaato Portfolio xirfad leh
 const technologies = [
-  { name: "React", icon: "⚛️", color: "group-hover:text-[#61DAFB]" },
-  { name: "TypeScript", icon: "📘", color: "group-hover:text-[#3178C6]" },
-  { name: "Node.js", icon: "🟢", color: "group-hover:text-[#339933]" },
-  { name: "Prisma", icon: "💎", color: "group-hover:text-[#2D3748]" },
-  { name: "MongoDB", icon: "🍃", color: "group-hover:text-[#47A248]" },
-  { name: "Tailwind CSS", icon: "🎨", color: "group-hover:text-[#06B6D4]" },
-  { name: "Next.js", icon: "▲", color: "group-hover:text-white" },
-  { name: "Docker", icon: "🐳", color: "group-hover:text-[#2496ED]" },
-  { name: "PostgreSQL", icon: "🐘", color: "group-hover:text-[#4169E1]" },
-  { name: "Python", icon: "🐍", color: "group-hover:text-[#3776AB]" },
+  { 
+    name: "HTML5", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" className="w-6 h-6" alt="HTML5" />, 
+    color: "group-hover:text-[#E34F26]" 
+  },
+  { 
+    name: "CSS3", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" className="w-6 h-6" alt="CSS3" />, 
+    color: "group-hover:text-[#1572B6]" 
+  },
+  { 
+    name: "JavaScript", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" className="w-6 h-6 rounded-sm" alt="JS" />, 
+    color: "group-hover:text-[#F7DF1E]" 
+  },
+  { 
+    name: "React", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" className="w-6 h-6" alt="React" />, 
+    color: "group-hover:text-[#61DAFB]" 
+  },
+  { 
+    name: "TypeScript", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" className="w-6 h-6" alt="TS" />, 
+    color: "group-hover:text-[#3178C6]" 
+  },
+  { 
+    name: "Next.js", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" className="w-6 h-6 invert dark:invert-0" alt="Next.js" />, 
+    color: "group-hover:text-white" 
+  },
+  { 
+    name: "Node.js", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" className="w-6 h-6" alt="Node" />, 
+    color: "group-hover:text-[#339933]" 
+  },
+  { 
+    name: "Express", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" className="w-7 h-7 invert dark:invert-0" alt="Express" />, 
+    color: "group-hover:text-white" 
+  },
+  { 
+    name: "MongoDB", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" className="w-6 h-6" alt="MongoDB" />, 
+    color: "group-hover:text-[#47A248]" 
+  },
+  { 
+    name: "Prisma", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" className="w-6 h-6 invert dark:invert-0" alt="Prisma" />, 
+    color: "group-hover:text-white" 
+  },
+  { 
+    name: "Tailwind CSS", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" className="w-6 h-6" alt="Tailwind" />, 
+    color: "group-hover:text-[#06B6D4]" 
+  },
+  { 
+    name: "Docker", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" className="w-6 h-6" alt="Docker" />, 
+    color: "group-hover:text-[#2496ED]" 
+  },
+  { 
+    name: "GitHub", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" className="w-6 h-6 invert dark:invert-0" alt="GitHub" />, 
+    color: "group-hover:text-white" 
+  },
+  { 
+    name: "Python", 
+    icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" className="w-6 h-6" alt="Python" />, 
+    color: "group-hover:text-[#3776AB]" 
+  },
 ];
 
 const TechLogos = () => {
