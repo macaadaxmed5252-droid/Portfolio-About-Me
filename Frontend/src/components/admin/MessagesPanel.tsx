@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Trash2, Eye, Mail, Clock, Loader2, CheckCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, Eye, Mail, Clock, Loader2, CheckCheck, MessageSquare } from 'lucide-react';
 import { messagesAPI } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -43,146 +43,185 @@ const MessagesPanel = () => {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Delete this message?')) return;
+        if (!confirm('Purge this transmission?')) return;
         try {
             await messagesAPI.delete(id);
-            toast.success('Message deleted.');
+            toast.success('Transmission purged.');
             setMessages(prev => prev.filter(m => m._id !== id));
             if (selected?._id === id) setSelected(null);
         } catch {
-            toast.error('Failed to delete.');
+            toast.error('Purge failed.');
         }
     };
 
     const unread = messages.filter(m => !m.isRead).length;
 
     return (
-        <div className="space-y-5">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                    <h2 className="text-lg font-black text-foreground tracking-tighter uppercase leading-none">Inbound Messages</h2>
-                    {unread > 0 && (
-                        <span className="px-2 py-0.5 bg-red-100 text-red-600 text-[9px] font-black rounded-full border border-red-200 shadow-sm animate-pulse uppercase tracking-widest">
-                            {unread} Priority
-                        </span>
-                    )}
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card border border-border/50 p-6 rounded-[2rem] shadow-sm">
+                <div>
+                    <h2 className="text-xl font-black text-foreground tracking-tighter uppercase leading-none">Inbound Signals</h2>
+                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] mt-2 opacity-60">Communication encrypted packets</p>
                 </div>
+                {unread > 0 && (
+                    <div className="flex items-center gap-3 px-5 py-2.5 bg-red-500/10 border border-red-500/20 rounded-2xl animate-pulse">
+                        <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                        <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">{unread} UNRESOLVED SIGNALS</span>
+                    </div>
+                )}
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                <div className="flex justify-center py-20">
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
                 </div>
             ) : messages.length === 0 ? (
-                <div className="text-center py-16 text-muted-foreground bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest opacity-60">Zero traffic recorded...</div>
+                <div className="text-center py-32 bg-card/50 border-2 border-dashed border-border rounded-[3rem]">
+                    <MessageSquare size={48} className="mx-auto mb-4 text-muted-foreground opacity-20" />
+                    <h3 className="text-xl font-black text-foreground/40 uppercase tracking-tighter">Zero Traffic</h3>
+                    <p className="text-[10px] font-bold text-muted-foreground opacity-40 uppercase mt-2">No incoming transmissions recorded</p>
+                </div>
             ) : (
-                <div className="grid lg:grid-cols-2 gap-5 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Message List */}
-                    <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="lg:col-span-5 xl:col-span-4 space-y-3 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
                         {messages.map((msg) => (
                             <motion.div
                                 key={msg._id}
                                 layout
                                 onClick={() => handleRead(msg)}
                                 className={`
-                                    relative p-4 rounded-xl border cursor-pointer transition-all duration-300 shadow-sm
+                                    relative p-6 rounded-[2rem] border cursor-pointer transition-all duration-500 group
                                     ${selected?._id === msg._id
-                                        ? 'bg-primary/5 border-primary shadow-md shadow-primary/5'
-                                        : 'bg-card border-border hover:border-primary/20 hover:shadow-md'
+                                        ? 'bg-primary/5 border-primary shadow-xl shadow-primary/5'
+                                        : 'bg-card border-border/50 hover:border-primary/20 hover:shadow-2xl'
                                     }
-                                    ${!msg.isRead ? 'border-l-4 border-l-primary ring-1 ring-primary/5' : ''}
+                                    ${!msg.isRead ? 'ring-1 ring-primary/10' : ''}
                                 `}
                             >
-                                <div className="flex items-start justify-between gap-2.5">
-                                    <div className="min-w-0">
-                                        <div className="flex items-center gap-1.5 mb-1">
-                                            {!msg.isRead && <span className="w-2 h-2 rounded-full bg-primary shrink-0 ring-4 ring-primary/10" />}
-                                            <p className={`text-[11px] font-black uppercase truncate tracking-tight ${!msg.isRead ? 'text-foreground' : 'text-slate-500'}`}>
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {!msg.isRead && (
+                                                <div className="w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/20 shrink-0" />
+                                            )}
+                                            <p className={`text-[12px] font-black uppercase tracking-tight truncate ${!msg.isRead ? 'text-foreground' : 'text-muted-foreground'}`}>
                                                 {msg.name}
                                             </p>
                                         </div>
-                                        <p className="text-[10px] text-muted-foreground truncate mb-2 font-bold opacity-70">{msg.email}</p>
-                                        <div className="inline-block px-2 py-0.5 bg-muted rounded-md text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                                            {msg.subject}
+                                        <p className="text-[10px] text-muted-foreground truncate mb-4 font-bold opacity-60 uppercase tracking-widest">{msg.subject}</p>
+                                        
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1.5 text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest">
+                                                <Clock size={10} />
+                                                {new Date(msg.createdAt).toLocaleDateString()}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col items-end gap-2.5 shrink-0">
-                                        <span className="text-[9px] text-muted-foreground font-black uppercase tracking-widest opacity-60">
-                                            {new Date(msg.createdAt).toLocaleDateString()}
-                                        </span>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); handleDelete(msg._id); }}
-                                            className="p-1 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-500/5 transition-all"
-                                        >
-                                            <Trash2 size={13} />
-                                        </button>
-                                    </div>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleDelete(msg._id); }}
+                                        className="p-3 rounded-2xl text-muted-foreground hover:text-red-500 bg-secondary hover:bg-red-500/10 transition-all active:scale-90"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
 
                     {/* Message Detail */}
-                    <div className="bg-card border border-border rounded-xl p-6 sticky top-6 shadow-sm min-h-[350px]">
-                        {selected ? (
-                            <div className="space-y-5">
-                                <div className="flex items-start justify-between border-b border-border pb-5">
-                                    <div>
-                                        <h3 className="font-black text-foreground text-xl tracking-tighter leading-tight mb-2 uppercase">{selected.subject}</h3>
-                                        <div className="flex flex-col gap-1.5">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center text-primary">
-                                                    <Mail size={10} />
+                    <div className="lg:col-span-7 xl:col-span-8">
+                        <AnimatePresence mode="wait">
+                            {selected ? (
+                                <motion.div
+                                    key={selected._id}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="bg-card border border-border/50 rounded-[3rem] p-8 md:p-12 shadow-sm min-h-[500px] flex flex-col relative overflow-hidden"
+                                >
+                                    {/* Decorative background element */}
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -mr-32 -mt-32" />
+
+                                    <div className="relative">
+                                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-10 border-b border-border/50 mb-10">
+                                            <div className="space-y-4">
+                                                <div className="inline-block px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-[9px] font-black text-primary uppercase tracking-[0.2em]">
+                                                    Signal Identification: #{selected._id.slice(-6)}
                                                 </div>
-                                                <span className="text-slate-700 text-[11px] font-black uppercase tracking-tight">{selected.name}</span>
-                                                <span className="text-muted-foreground text-[10px] font-bold opacity-60">{selected.email}</span>
+                                                <h3 className="font-black text-foreground text-3xl md:text-4xl tracking-tighter leading-none uppercase">{selected.subject}</h3>
+                                                
+                                                <div className="flex flex-wrap gap-4">
+                                                    <div className="flex items-center gap-2.5 px-4 py-2 bg-muted/50 rounded-2xl border border-border/50">
+                                                        <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                                                            <Mail size={14} />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-foreground text-[11px] font-black uppercase tracking-tight">{selected.name}</span>
+                                                            <span className="text-muted-foreground text-[9px] font-bold opacity-60">{selected.email}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2.5 px-4 py-2 bg-muted/50 rounded-2xl border border-border/50">
+                                                        <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center text-muted-foreground border border-border/50">
+                                                            <Clock size={14} />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-foreground text-[11px] font-black uppercase tracking-tight">{new Date(selected.createdAt).toLocaleDateString()}</span>
+                                                            <span className="text-muted-foreground text-[9px] font-bold opacity-60">{new Date(selected.createdAt).toLocaleTimeString()}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-5 h-5 rounded-md bg-muted flex items-center justify-center text-muted-foreground">
-                                                    <Clock size={10} />
+                                            {selected.isRead && (
+                                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-2xl border border-emerald-500/20 uppercase tracking-widest shadow-lg shadow-emerald-500/5">
+                                                    <CheckCheck size={14} /> ARCHIVED
                                                 </div>
-                                                <span className="text-muted-foreground text-[9px] font-black uppercase tracking-widest">
-                                                    {new Date(selected.createdAt).toLocaleString()}
-                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="mb-12">
+                                            <div className="bg-muted/30 border border-border/50 rounded-[2.5rem] p-8 md:p-10 shadow-inner">
+                                                <p className="text-foreground/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap font-bold uppercase tracking-tight">
+                                                    {selected.message}
+                                                </p>
                                             </div>
                                         </div>
+
+                                        <div className="flex gap-4">
+                                            <a
+                                                href={`mailto:${selected.email}?subject=RE: ${selected.subject}`}
+                                                className="flex-1 md:flex-none inline-flex items-center justify-center gap-3 px-8 py-5 bg-primary text-primary-foreground rounded-3xl text-[11px] font-black uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-2xl shadow-primary/20 active:scale-95"
+                                            >
+                                                <Mail size={18} /> Transmit Response
+                                            </a>
+                                            <button
+                                                onClick={() => handleDelete(selected._id)}
+                                                className="p-5 bg-secondary text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-3xl transition-all active:scale-95"
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    {selected.isRead && (
-                                        <span className="flex items-center gap-1.5 px-2 py-1 bg-emerald-100 text-emerald-600 text-[8px] font-black rounded-full border border-emerald-200 uppercase tracking-widest">
-                                            <CheckCheck size={12} /> Seen
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="py-1">
-                                    <div className="bg-muted border border-border rounded-xl p-5">
-                                        <p className="text-slate-600 leading-relaxed text-[11px] whitespace-pre-wrap font-bold">{selected.message}</p>
+                                </motion.div>
+                            ) : (
+                                <div className="h-full min-h-[500px] flex items-center justify-center bg-card/30 border-4 border-dashed border-border/50 rounded-[4rem]">
+                                    <div className="text-center px-10">
+                                        <div className="w-24 h-24 bg-muted/50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-border/50 shadow-inner">
+                                            <Eye size={40} className="text-muted-foreground opacity-20" />
+                                        </div>
+                                        <h4 className="font-black text-foreground/40 text-2xl mb-2 uppercase tracking-tighter leading-none">Awaiting Signal Selection</h4>
+                                        <p className="text-[11px] text-muted-foreground/40 max-w-[240px] mx-auto font-black uppercase tracking-widest leading-relaxed">Select a communication packet from the left console to verify payload details</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <a
-                                        href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
-                                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-primary/10 active:scale-95"
-                                    >
-                                        <Mail size={14} /> Send Response
-                                    </a>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-muted-foreground">
-                                <div className="text-center px-6">
-                                    <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3 border border-border">
-                                        <Eye size={24} className="opacity-40" />
-                                    </div>
-                                    <h4 className="font-black text-foreground text-sm mb-1 uppercase tracking-tighter">Null Selection</h4>
-                                    <p className="text-[10px] text-slate-500 max-w-[180px] mx-auto font-bold uppercase tracking-widest opacity-60">Pick a transmission to audit details</p>
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             )}
         </div>
     );
 };
+
 
 export default MessagesPanel;

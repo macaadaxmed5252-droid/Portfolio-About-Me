@@ -174,25 +174,25 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Entity Name</label>
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Enter your full name</label>
                     <input
                       name="name"
                       value={form.name}
                       onChange={handleChange}
                       required
-                      placeholder="Organization or Name"
+                      placeholder="Enter your full name"
                       className="w-full bg-background/80 dark:bg-background/20 border border-border/80 dark:border-border/40 text-foreground px-5 py-4 rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none transition-all font-bold text-xs uppercase tracking-tight"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Secure Email</label>
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Enter your email</label>
                     <input
                       type="email"
                       name="email"
                       value={form.email}
                       onChange={handleChange}
                       required
-                      placeholder="address@domain.com"
+                      placeholder="address@email.com"
                       className="w-full bg-background/80 dark:bg-background/20 border border-border/80 dark:border-border/40 text-foreground px-5 py-4 rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none transition-all font-bold text-xs uppercase tracking-tight"
                     />
                   </div>

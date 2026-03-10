@@ -170,14 +170,14 @@ const Testimonials = () => {
                                     <form onSubmit={handleSubmit} className="space-y-5">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-1.5">
-                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Name *</label>
+                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Full Name *</label>
                                                 <input
                                                     name="username"
                                                     value={formData.username}
                                                     onChange={handleInputChange}
                                                     required
                                                     className="w-full bg-background/50 border border-border/80 text-foreground px-4 py-3.5 rounded-xl focus:border-primary outline-none transition-all font-bold text-xs uppercase"
-                                                    placeholder="John Doe"
+                                                    placeholder="Enter your full name"
                                                 />
                                             </div>
                                             <div className="space-y-1.5">
@@ -214,7 +214,7 @@ const Testimonials = () => {
                                                 onChange={handleInputChange}
                                                 required
                                                 className="w-full bg-background/50 border border-border/80 text-foreground px-4 py-3.5 rounded-xl focus:border-primary outline-none transition-all font-bold text-xs uppercase"
-                                                placeholder="john@example.com"
+                                                placeholder="Name@example.com"
                                             />
                                         </div>
 

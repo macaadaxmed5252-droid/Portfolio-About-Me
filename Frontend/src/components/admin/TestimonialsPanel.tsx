@@ -46,21 +46,21 @@ const TestimonialsPanel = () => {
     const handleApprove = async (id: string) => {
         try {
             await testimonialsAPI.approve(id);
-            toast.success("Testimonial approved!");
+            toast.success("Identity verified!");
             setTestimonials(prev => prev.map(t => t._id === id ? { ...t, isApproved: true } : t));
         } catch (err) {
-            toast.error("Approval failed.");
+            toast.error("Verification failed.");
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this testimonial?")) return;
+        if (!confirm("Permanently erase this record?")) return;
         try {
             await testimonialsAPI.delete(id);
-            toast.success("Testimonial deleted.");
+            toast.success("Record erased.");
             setTestimonials(prev => prev.filter(t => t._id !== id));
         } catch (err) {
-            toast.error("Deletion failed.");
+            toast.error("Erasure failed.");
         }
     };
 
@@ -78,146 +78,151 @@ const TestimonialsPanel = () => {
 
     if (loading) {
         return (
-            <div className="flex h-[40vh] items-center justify-center">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <div className="flex justify-center py-20">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Header / Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1 opacity-70">Total Reviews</p>
-                    <h3 className="text-2xl font-black text-foreground tracking-tighter leading-none">{testimonials.length}</h3>
-                </div>
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 opacity-70">Approved</p>
-                    <h3 className="text-2xl font-black text-foreground tracking-tighter leading-none">{testimonials.filter(t => t.isApproved).length}</h3>
-                </div>
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                    <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1 opacity-70">Pending Action</p>
-                    <h3 className="text-2xl font-black text-foreground tracking-tighter leading-none">{testimonials.filter(t => !t.isApproved).length}</h3>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                    { label: 'Total Dossiers', value: testimonials.length, icon: MessageSquare, color: 'text-primary' },
+                    { label: 'Verified Nodes', value: testimonials.filter(t => t.isApproved).length, icon: ShieldCheck, color: 'text-emerald-500' },
+                    { label: 'Pending Audit', value: testimonials.filter(t => !t.isApproved).length, icon: AlertCircle, color: 'text-amber-500' },
+                ].map((stat, i) => (
+                    <div key={i} className="bg-card border border-border/50 rounded-[2rem] p-6 shadow-sm flex items-center gap-5 group hover:border-primary/20 transition-all duration-500">
+                        <div className={`w-14 h-14 rounded-2xl bg-muted/50 flex items-center justify-center ${stat.color} border border-border/50 group-hover:bg-primary/5 transition-all`}>
+                            <stat.icon size={28} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1 opacity-60">{stat.label}</p>
+                            <h3 className="text-2xl font-black text-foreground tracking-tighter leading-none">{stat.value}</h3>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Toolbar */}
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card border border-border p-4 rounded-2xl shadow-sm">
-                <div className="relative w-full md:w-80">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+            <div className="flex flex-col xl:flex-row gap-6 items-center justify-between bg-card border border-border/50 p-6 rounded-[2.5rem] shadow-sm">
+                <div className="relative w-full xl:w-96 group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
                     <input
                         type="text"
                         placeholder="Search testimonials..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-background border border-border pl-10 pr-4 py-2 rounded-xl text-xs font-bold uppercase tracking-tight focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        className="w-full bg-muted/30 border border-border/50 pl-12 pr-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-tight focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all placeholder-slate-500"
                     />
                 </div>
 
-                <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                <div className="flex gap-3 w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 no-scrollbar">
                     {(['all', 'pending', 'approved'] as const).map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`
-                                px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap
+                                px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 border
                                 ${filter === f
-                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                    : 'bg-muted text-muted-foreground hover:bg-secondary'
+                                    ? 'bg-primary text-primary-foreground border-primary shadow-xl shadow-primary/20'
+                                    : 'bg-muted/30 text-muted-foreground border-border/50 hover:bg-secondary'
                                 }
                             `}
                         >
-                            {f}
+                            {f} AUDIT
                         </button>
                     ))}
                 </div>
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 <AnimatePresence mode="popLayout">
                     {filteredTestimonials.length > 0 ? (
                         filteredTestimonials.map((t) => (
                             <motion.div
                                 key={t._id}
                                 layout
-                                initial={{ opacity: 0, scale: 0.9 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:border-primary/20 transition-all flex flex-col group relative"
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="bg-card border border-border/50 rounded-[2.5rem] p-8 shadow-sm hover:border-primary/20 hover:shadow-2xl transition-all duration-500 flex flex-col group relative"
                             >
                                 {/* Status Indicator */}
                                 {!t.isApproved && (
-                                    <div className="absolute -top-2 -right-2 bg-amber-500 text-white px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
-                                        <AlertCircle size={10} /> Pending
+                                    <div className="absolute -top-3 -right-3 bg-amber-500 text-white px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center gap-2 border-2 border-card">
+                                        <AlertCircle size={12} /> Pending Audit
                                     </div>
                                 )}
 
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 p-0.5">
+                                <div className="flex items-center gap-5 mb-6">
+                                    <div className="w-16 h-16 rounded-[1.5rem] bg-muted/50 flex items-center justify-center border border-border/50 p-1 group-hover:scale-105 transition-transform duration-500">
                                         {t.userImage ? (
                                             <img src={t.userImage} alt="" className="w-full h-full object-cover rounded-xl" />
                                         ) : (
-                                            <User size={24} className="text-primary" />
+                                            <User size={32} className="text-muted-foreground opacity-40" />
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <h4 className="text-sm font-black text-foreground truncate uppercase tracking-tight">{t.username}</h4>
-                                        <p className="text-[9px] text-muted-foreground truncate opacity-60 font-bold">{t.email}</p>
+                                        <h4 className="text-[13px] font-black text-foreground truncate uppercase tracking-tight group-hover:text-primary transition-colors">{t.username}</h4>
+                                        <p className="text-[10px] text-muted-foreground truncate opacity-60 font-bold uppercase tracking-tight">{t.email}</p>
                                         {(t.position || t.company) && (
-                                            <p className="text-[9px] text-primary truncate font-black uppercase tracking-tighter mt-0.5">
+                                            <div className="mt-1.5 inline-block px-2.5 py-1 bg-primary/5 border border-primary/10 rounded-lg text-[8px] font-black text-primary uppercase tracking-tighter">
                                                 {t.position} {t.company ? `@ ${t.company}` : ''}
-                                            </p>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="flex gap-0.5 mb-4">
+                                <div className="flex gap-1 mb-6 p-3 bg-muted/20 border border-border/50 rounded-2xl w-fit">
                                     {[...Array(5)].map((_, i) => (
                                         <Star
                                             key={i}
-                                            size={14}
+                                            size={16}
                                             className={`${i < t.rating ? "text-primary fill-primary" : "text-muted-foreground/20"}`}
                                         />
                                     ))}
                                 </div>
 
-                                <p className="text-[11px] font-bold text-muted-foreground/80 leading-relaxed uppercase tracking-tight italic mb-6 flex-grow">
-                                    "{t.comment}"
-                                </p>
+                                <div className="relative mb-8 flex-grow">
+                                    <p className="text-[13px] font-bold text-foreground/70 leading-relaxed uppercase tracking-tight italic relative z-10">
+                                        "{t.comment}"
+                                    </p>
+                                </div>
 
-                                <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                                    <div className="flex items-center gap-2 text-[8px] font-black text-muted-foreground/40 uppercase tracking-widest">
-                                        <Clock size={10} /> {new Date(t.createdAt).toLocaleDateString()}
+                                <div className="flex items-center justify-between pt-6 border-t border-border/50 mt-auto">
+                                    <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest">
+                                        <Clock size={12} /> {new Date(t.createdAt).toLocaleDateString()}
                                     </div>
 
                                     <div className="flex gap-2">
                                         {!t.isApproved && (
                                             <button
                                                 onClick={() => handleApprove(t._id)}
-                                                className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
-                                                title="Approve"
+                                                className="p-3.5 bg-emerald-500/10 text-emerald-500 rounded-2xl hover:bg-emerald-500 hover:text-white transition-all shadow-sm active:scale-90 border border-emerald-500/20"
+                                                title="Approve Protocol"
                                             >
-                                                <Check size={16} />
+                                                <Check size={20} />
                                             </button>
                                         )}
                                         <button
                                             onClick={() => handleDelete(t._id)}
-                                            className="p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                                            title="Delete"
+                                            className="p-3.5 bg-red-500/10 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90 border border-red-500/20"
+                                            title="Purge Dossier"
                                         >
-                                            <Trash2 size={16} />
+                                            <Trash2 size={20} />
                                         </button>
                                     </div>
                                 </div>
                             </motion.div>
                         ))
                     ) : (
-                        <div className="col-span-full py-20 text-center bg-card/50 border-2 border-dashed border-border rounded-[3rem]">
-                            <MessageSquare className="mx-auto mb-4 text-muted-foreground opacity-20" size={48} />
-                            <h3 className="text-xl font-black text-foreground/40 uppercase tracking-tighter">No Testimonials Found</h3>
-                            <p className="text-[10px] font-bold text-muted-foreground opacity-40 uppercase mt-2">Try adjusting your filters or search term.</p>
+                        <div className="col-span-full py-40 text-center bg-card/30 border-4 border-dashed border-border/50 rounded-[4rem]">
+                            <MessageSquare className="mx-auto mb-6 text-muted-foreground opacity-10" size={64} />
+                            <h3 className="text-2xl font-black text-foreground/30 uppercase tracking-tighter">No Testimonials Recorded</h3>
+                            <p className="text-[11px] font-black text-muted-foreground opacity-30 uppercase mt-2 tracking-widest">Initialize audit filters to refine view</p>
                         </div>
                     )}
                 </AnimatePresence>
@@ -225,5 +230,6 @@ const TestimonialsPanel = () => {
         </div>
     );
 };
+
 
 export default TestimonialsPanel;

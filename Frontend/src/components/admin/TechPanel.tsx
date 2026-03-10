@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Upload, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Loader2, Check } from 'lucide-react';
 import { techsAPI } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -86,66 +86,82 @@ const TechPanel = () => {
 
             if (editTech) {
                 await techsAPI.update(editTech._id, fd);
-                toast.success('Technology updated!');
+                toast.success('Record updated!');
             } else {
                 await techsAPI.create(fd);
-                toast.success('Technology added!');
+                toast.success('Entity initialized!');
             }
             setShowModal(false);
             fetchTechs();
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to save.');
+            toast.error(err.response?.data?.message || 'Update failed.');
         } finally {
             setSubmitting(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Remove this technology?')) return;
+        if (!confirm('Remove this tech entity?')) return;
         try {
             await techsAPI.delete(id);
-            toast.success('Technology removed.');
+            toast.success('Entity purged.');
             setTechs(prev => prev.filter(t => t._id !== id));
         } catch {
-            toast.error('Failed to delete.');
+            toast.error('Purge failed.');
         }
     };
 
     return (
-        <div className="space-y-5">
-            <div className="flex items-center justify-between">
-                <h2 className="text-lg font-black text-foreground tracking-tighter uppercase">Digital Arsenal</h2>
-                <button onClick={openCreate}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-black text-[10px] uppercase tracking-widest hover:brightness-110 transition-all shadow-md shadow-primary/10 active:scale-95">
-                    <Plus size={14} /> Add Tech
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card border border-border/50 p-6 rounded-[2rem] shadow-sm">
+                <div>
+                    <h2 className="text-xl font-black text-foreground tracking-tighter uppercase leading-none">Digital Arsenal</h2>
+                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] mt-2 opacity-60">System core competencies</p>
+                </div>
+                <button 
+                    onClick={openCreate}
+                    className="flex items-center justify-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-[11px] uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-primary/20 active:scale-95 whitespace-nowrap"
+                >
+                    <Plus size={16} /> Integrate Tech
                 </button>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                <div className="flex justify-center py-20">
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
                 </div>
             ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {techs.map((tech) => (
+                    {techs.sort((a,b) => (a.order || 0) - (b.order || 0)).map((tech) => (
                         <motion.div
                             key={tech._id}
                             layout
-                            className="group bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2.5 hover:border-primary/20 hover:shadow-lg transition-all"
+                            className="group bg-card border border-border/50 rounded-3xl p-5 flex flex-col items-center gap-4 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 relative"
                         >
-                            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center transition-transform group-hover:scale-105">
-                                <img src={tech.iconUrl} alt={tech.name}
-                                    className={`w-7 h-7 object-contain ${tech.invert ? 'invert opacity-80' : ''}`} />
+                            <div className="relative">
+                                <div className="w-16 h-16 bg-muted/50 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 border border-border/50 group-hover:bg-primary/5">
+                                    <img src={tech.iconUrl} alt={tech.name}
+                                        className={`w-9 h-9 object-contain transition-all duration-500 ${tech.invert ? 'invert opacity-80' : ''}`} />
+                                </div>
+                                {/* Rank badge */}
+                                <div className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-primary text-white text-[8px] font-black rounded-lg flex items-center justify-center shadow-lg border-2 border-card uppercase">
+                                    {tech.order ?? 0}
+                                </div>
                             </div>
-                            <span className="text-[10px] font-black text-foreground text-center uppercase tracking-tight truncate w-full">{tech.name}</span>
-                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+
+                            <span className="text-[11px] font-black text-foreground text-center uppercase tracking-tight truncate w-full group-hover:text-primary transition-colors">
+                                {tech.name}
+                            </span>
+
+                            <div className="flex gap-2.5">
                                 <button onClick={() => openEdit(tech)}
-                                    className="p-1 rounded-md text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
-                                    <Pencil size={12} />
+                                    className="p-2 rounded-xl text-muted-foreground hover:text-primary bg-secondary hover:bg-primary/10 transition-all active:scale-90">
+                                    <Pencil size={14} />
                                 </button>
                                 <button onClick={() => handleDelete(tech._id)}
-                                    className="p-1 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-500/5 transition-all">
-                                    <Trash2 size={12} />
+                                    className="p-2 rounded-xl text-muted-foreground hover:text-red-500 bg-secondary hover:bg-red-500/10 transition-all active:scale-90">
+                                    <Trash2 size={14} />
                                 </button>
                             </div>
                         </motion.div>
@@ -157,62 +173,83 @@ const TechPanel = () => {
             <AnimatePresence>
                 {showModal && (
                     <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-colors"
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[60] flex items-center justify-center p-4 transition-colors"
                         onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
                     >
-                        <motion.div initial={{ scale: 0.98, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.98, opacity: 0, y: 10 }}
-                            className="bg-card border border-border shadow-2xl rounded-2xl w-full max-w-sm">
-                            <div className="flex items-center justify-between p-5 border-b border-border">
-                                <h3 className="font-black text-foreground text-base tracking-tighter uppercase">{editTech ? 'Update Arsenal' : 'New Technology'}</h3>
-                                <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground p-1.5 hover:bg-muted rounded-lg transition-all"><X size={18} /></button>
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-card border border-border/50 shadow-2xl rounded-[2.5rem] w-full max-w-sm overflow-hidden flex flex-col"
+                        >
+                            <div className="flex items-center justify-between p-8 border-b border-border/50">
+                                <div>
+                                    <h3 className="font-black text-foreground text-xl tracking-tighter uppercase leading-none">
+                                        {editTech ? 'Update Record' : 'New Entity'}
+                                    </h3>
+                                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60">Competency Specification</p>
+                                </div>
+                                <button onClick={() => setShowModal(false)} className="bg-secondary p-2.5 rounded-2xl text-muted-foreground hover:text-foreground transition-all active:scale-95">
+                                    <X size={20} />
+                                </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                            <form onSubmit={handleSubmit} className="p-8 space-y-5">
                                 {/* Icon upload */}
                                 <div onClick={() => fileRef.current?.click()}
-                                    className="h-28 border-2 border-dashed border-border rounded-xl hover:border-primary/50 cursor-pointer flex items-center justify-center bg-muted transition-colors overflow-hidden group">
+                                    className="h-32 border-2 border-dashed border-border/50 rounded-[2rem] hover:border-primary/50 cursor-pointer flex items-center justify-center bg-muted/30 transition-all overflow-hidden group mb-2"
+                                >
                                     {iconPreview ? (
-                                        <img src={iconPreview} className="w-12 h-12 object-contain" alt="icon preview" />
+                                        <div className="p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                            <img src={iconPreview} className="w-14 h-14 object-contain" alt="preview" />
+                                        </div>
                                     ) : (
                                         <div className="text-center text-muted-foreground group-hover:text-primary transition-colors">
-                                            <Upload size={20} className="mx-auto mb-1 opacity-50 group-hover:opacity-100" />
-                                            <p className="text-[9px] font-black uppercase tracking-widest">Update Icon Identity</p>
+                                            <div className="p-4 bg-primary/10 rounded-2xl mx-auto mb-2 w-fit">
+                                                <Upload size={24} className="opacity-50 group-hover:opacity-100" />
+                                            </div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest">Update Signature</p>
                                         </div>
                                     )}
                                     <input ref={fileRef} type="file" accept="image/*" onChange={handleIconChange} className="hidden" />
                                 </div>
 
                                 {[
-                                    { key: 'name', label: 'Identifier', placeholder: 'React', required: true },
-                                    { key: 'color', label: 'Shadow Protocol', placeholder: 'shadow-violet-600/20' },
-                                    { key: 'textColor', label: 'Hover Text Signature', placeholder: 'group-hover:text-violet-600' },
-                                ].map(({ key, label, placeholder, required }) => (
+                                    { key: 'name', label: 'Primary Alias', placeholder: 'React', required: true },
+                                    { key: 'order', label: 'Priority Rank', placeholder: '0', type: 'number' },
+                                ].map(({ key, label, placeholder, required, type }) => (
                                     <div key={key}>
-                                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">{label}</label>
-                                        <input type="text" value={form[key as keyof typeof form]}
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-2 px-1 opacity-70">{label}</label>
+                                        <input 
+                                            type={type || 'text'} 
+                                            value={form[key as keyof typeof form]}
                                             onChange={(e) => setForm(f => ({ ...f, [key]: e.target.value }))}
-                                            required={required} placeholder={placeholder}
-                                            className="w-full bg-muted border border-border text-foreground placeholder-slate-400 px-4 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-[11px] font-bold" />
+                                            required={required} 
+                                            placeholder={placeholder}
+                                            className="w-full bg-muted/30 border border-border/50 text-foreground placeholder-slate-500 px-5 py-4 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-xs font-black uppercase tracking-tight" 
+                                        />
                                     </div>
                                 ))}
 
-                                <div className="flex items-center gap-3 py-1">
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Invert Icon Protocol</label>
+                                <div className="flex items-center justify-between bg-muted/30 border border-border/50 rounded-2xl px-5 py-3">
+                                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-70">Invert Protocol</label>
                                     <input type="checkbox" checked={form.invert === 'true'}
                                         onChange={(e) => setForm(f => ({ ...f, invert: String(e.target.checked) }))}
-                                        className="w-4 h-4 accent-primary rounded-md" />
+                                        className="w-5 h-5 accent-primary rounded-lg" />
                                 </div>
 
-                                <div className="flex gap-3 pt-3">
+                                <div className="flex gap-4 pt-4 border-t border-border/50">
                                     <button type="button" onClick={() => setShowModal(false)}
-                                        className="flex-1 py-3 text-[10px] font-black text-slate-500 bg-secondary rounded-xl hover:bg-muted transition-all uppercase tracking-widest">
+                                        className="flex-1 py-4 text-[11px] font-black text-muted-foreground bg-secondary rounded-2xl hover:bg-muted transition-all uppercase tracking-[0.2em] active:scale-95">
                                         Abort
                                     </button>
                                     <button type="submit" disabled={submitting}
-                                        className="flex-1 py-3 text-[10px] font-black bg-primary text-white rounded-xl hover:brightness-110 transition-all shadow-lg shadow-primary/10 disabled:opacity-50 flex items-center justify-center gap-2 uppercase tracking-widest active:scale-95">
-                                        {submitting && <Loader2 size={14} className="animate-spin" />}
-                                        {editTech ? 'Update Record' : 'Initialize Tech'}
+                                        className="flex-1 py-4 text-[11px] font-black bg-primary text-primary-foreground rounded-2xl hover:brightness-110 transition-all shadow-xl shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-3 uppercase tracking-[0.2em] active:scale-95">
+                                        {submitting ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
+                                        {editTech ? 'Finalize' : 'Integrate'}
                                     </button>
                                 </div>
                             </form>
@@ -223,5 +260,6 @@ const TechPanel = () => {
         </div>
     );
 };
+
 
 export default TechPanel;
