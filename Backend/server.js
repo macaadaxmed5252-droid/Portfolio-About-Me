@@ -18,7 +18,17 @@ const app = express();
 const PORT = process.env.PORT || 5566;
 
 // ─── Connect Database ─────────────────────────────────────────────────────────
-connectDB();
+// ─── DB Connection Middleware (Robust for Serverless) ──────────────────────
+app.use(async (req, res, next) => {
+    // Skip DB for health check or root if preferred, but usually health needs DB
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error('Database connection failed:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error (DB)' });
+    }
+});
 
 // ─── Security Middleware ───────────────────────────────────────────────────────
 app.use(helmet());
@@ -52,7 +62,11 @@ app.use(cookieParser());
 // ─── Rate Limiting ─────────────────────────────────────────────────────────────
 app.use('/api/', globalRateLimiter);
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// ─── Health Check & Root ───────────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.json({ message: 'Muad Ahmed Portfolio API is active', node_env: process.env.NODE_ENV });
+});
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
@@ -74,8 +88,11 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-    console.log(`\n🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}\n`);
-});
+// ─── Start Server (Local Only) ────────────────────────────────────────────────
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`\n🚀 Server running on port ${PORT}\n`);
+    });
+}
 
 export default app;
