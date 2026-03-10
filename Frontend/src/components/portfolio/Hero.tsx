@@ -27,7 +27,7 @@ const Hero = () => {
   ];
 
   return (
-    <section id="home" ref={targetRef} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-background py-20 selection:bg-primary/30">
+    <section id="home" ref={targetRef} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-background pt-32 pb-20 md:py-20 selection:bg-primary/30">
 
       {/* --- ADVANCED BACKGROUND LAYER --- */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">

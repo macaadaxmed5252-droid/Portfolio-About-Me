@@ -143,38 +143,53 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-            className="fixed inset-0 top-[73px] z-40 md:hidden bg-background/95 backdrop-blur-3xl"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 top-0 z-[60] md:hidden bg-background/98 backdrop-blur-2xl flex flex-col pt-24"
           >
-            <div className="flex flex-col p-10 gap-4">
+            {/* Close button inside full screen menu */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-6 right-6 p-3 bg-muted/50 rounded-2xl text-primary"
+            >
+              <X size={24} />
+            </button>
+
+            <div className="flex flex-col p-8 gap-2 overflow-y-auto">
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/40 mb-4 ml-4">Navigation</span>
               {navLinks.map((link, i) => (
                 <motion.a
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
                   key={link.name}
                   href={link.href}
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection(link.href);
                   }}
-                  className={`text-3xl font-black uppercase tracking-tighter p-4 rounded-3xl flex items-center justify-between group ${activeLink === link.href
-                    ? "text-primary bg-primary/5 border border-primary/20"
-                    : "text-muted-foreground border border-transparent"
+                  className={`text-4xl font-black uppercase tracking-tighter p-4 rounded-3xl flex items-center justify-between group transition-all duration-300 ${activeLink === link.href
+                    ? "text-primary translate-x-2"
+                    : "text-muted-foreground/60 hover:text-foreground hover:translate-x-2"
                     }`}
                 >
-                  {link.name}
-                  <MoveRight size={24} className={`transition-transform ${activeLink === link.href ? "translate-x-0" : "-translate-x-10 opacity-0 group-hover:opacity-100 group-hover:translate-x-0"}`} />
+                  <div className="flex items-center gap-4">
+                    <span className="text-[10px] opacity-20 group-hover:opacity-100 group-hover:text-primary transition-all">0{i + 1}</span>
+                    {link.name}
+                  </div>
+                  <MoveRight size={28} className={`transition-all duration-500 ${activeLink === link.href ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0"}`} />
                 </motion.a>
               ))}
-              <Button
-                onClick={() => scrollToSection("#contact")}
-                className="bg-primary text-primary-foreground w-full rounded-3xl py-10 text-lg font-black uppercase tracking-[0.3em] mt-6 shadow-2xl shadow-primary/20 active:scale-95 transition-all"
-              >
-                Get In Touch
-              </Button>
+
+              <div className="mt-8 pt-8 border-t border-border/50">
+                <Button
+                  onClick={() => scrollToSection("#contact")}
+                  className="bg-primary text-primary-foreground w-full rounded-2xl py-8 text-sm font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+                >
+                  Let's Connect
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
