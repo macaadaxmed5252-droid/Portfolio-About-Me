@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Quote, Star, User, MessageSquare, Loader2, Sparkles, Send, X, CheckCircle2, Camera, Building2, Briefcase } from "lucide-react";
 import { testimonialsAPI } from "@/lib/api";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
 interface Testimonial {
     _id: string;
@@ -136,9 +137,10 @@ const Testimonials = () => {
 
                     <button
                         onClick={() => setShowForm(true)}
-                        className="mt-6 px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-[10px] uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-xl shadow-primary/20"
+                        className="mt-6 flex items-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 border border-primary/20 group"
                     >
-                        Ra'yi Soo Gudbi
+                        <Plus size={16} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
+                        <span>Give Feedback</span>
                     </button>
                 </div>
 
