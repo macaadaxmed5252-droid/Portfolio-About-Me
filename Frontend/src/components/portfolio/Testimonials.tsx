@@ -38,6 +38,18 @@ const Testimonials = () => {
         fetchTestimonials();
     }, []);
 
+    // Disable body scroll when modal is open
+    useEffect(() => {
+        if (showForm || showThankYou) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [showForm, showThankYou]);
+
     const fetchTestimonials = async () => {
         try {
             const res = await testimonialsAPI.getApproved();
@@ -147,7 +159,7 @@ const Testimonials = () => {
                                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                                 className="relative w-full max-w-xl bg-card border border-border/60 rounded-[2.5rem] shadow-2xl overflow-hidden"
                             >
-                                <div className="p-8 md:p-10">
+                                <div className="p-8 md:p-10 max-h-[85vh] overflow-y-auto custom-scrollbar">
                                     <div className="flex items-center justify-between mb-8">
                                         <h3 className="text-2xl font-black text-foreground tracking-tighter uppercase italic">Leave a Testimonial</h3>
                                         <button onClick={() => setShowForm(false)} className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground">
