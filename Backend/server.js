@@ -17,42 +17,43 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const PORT = process.env.PORT || 5566;
 
-// ─── Connect Database ─────────────────────────────────────────────────────────
-// ─── DB Connection Middleware (Robust for Serverless) ──────────────────────
-app.use(async (req, res, next) => {
-    // Skip DB for health check or root if preferred, but usually health needs DB
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        console.error('Database connection failed:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error (DB)' });
-    }
-});
-
-// ─── Security Middleware ───────────────────────────────────────────────────────
+// ─── Security Middleware (Must be FIRST for CORS in errors) ──────────────────
 app.use(helmet());
 const allowedOrigins = [
     'http://localhost:5252',
     'http://localhost:5173',
     'http://localhost:3000',
-    process.env.FRONTEND_URL,
+    'https://portfolio-about-me-mf9o.vercel.app', // Explicitly add your frontend
 ].filter(Boolean);
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (mobile apps, curl, Postman)
         if (!origin) return callback(null, true);
-        // Allow any vercel.app subdomain automatically
         if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
-        callback(new Error('Not allowed by CORS'));
+        callback(null, true); // Temporarily allow all for debugging CORS issues
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// ─── DB Connection Middleware ───────────────────────────────────────────────
+app.use(async (req, res, next) => {
+    if (req.path === '/api/health' || req.path === '/') return next();
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error('Database connection failed:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Database connection failed',
+            error: error.message // This will tell us EXACTLY why it failed
+        });
+    }
+});
 
 // ─── General Middleware ────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
