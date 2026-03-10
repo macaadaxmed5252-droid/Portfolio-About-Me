@@ -1,4 +1,5 @@
 import Subscriber from '../models/Subscriber.model.js';
+import sendEmail from '../utils/email.util.js';
 
 // ─── POST /api/subscribers (public) ──────────────────────────────────────────
 export const subscribe = async (req, res, next) => {
@@ -26,6 +27,27 @@ export const subscribe = async (req, res, next) => {
         }
 
         const subscriber = await Subscriber.create({ email });
+
+        // Send welcome email
+        try {
+            await sendEmail({
+                email: email,
+                subject: 'Waad ku mahadsantahay Is-diiwaangelintaada!',
+                message: 'Salaan, waad ku mahadsantahay inaad ku soo biirtay nidaamka. Waxaad si joogto ah u heli doontaa macluumaadka cusub.',
+                html: `
+                    <div style="font-family: sans-serif; padding: 20px; color: #333; text-align: center;">
+                        <h2 style="color: #7C3AED;">Ku soo dhawaaw!</h2>
+                        <p>Waad ku mahadsantahay inaad iska diiwaangelisay <b>Muad Ahmed Portfolio</b>.</p>
+                        <p>Haddi hadda waxaad si joogto ah u heli doontaa mashruucyada cusub iyo macluumaadka arsenal-kayga digital-ka ah.</p>
+                        <div style="margin-top: 30px; font-size: 0.8rem; color: #888;">
+                            &copy; ${new Date().getFullYear()} Muad Ahmed. Dhammaan xuquuqdu waa dhowran tahay.
+                        </div>
+                    </div>
+                `
+            });
+        } catch (emailErr) {
+            console.error('Welcome email failed:', emailErr);
+        }
 
         res.status(201).json({
             success: true,

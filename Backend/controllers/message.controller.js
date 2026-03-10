@@ -1,4 +1,5 @@
 import Message from '../models/Message.model.js';
+import sendEmail from '../utils/email.util.js';
 
 // ─── POST /api/messages (public) ─────────────────────────────────────────────
 export const createMessage = async (req, res, next) => {
@@ -6,6 +7,26 @@ export const createMessage = async (req, res, next) => {
         const { name, email, subject, message } = req.body;
 
         const newMessage = await Message.create({ name, email, subject, message });
+
+        // Send confirmation email
+        try {
+            await sendEmail({
+                email: email,
+                subject: `Waad ku mahadsantahay: ${subject}`,
+                message: `Salaan mudane/marwo ${name},\n\nFarriintaadii waan helnay. Waxaan kuugu soo jawaabi doonaa sida ugu dhaqsaha badan.\n\nMahadsanid.`,
+                html: `
+                    <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                        <h2 style="color: #7C3AED;">Salaan Mudane/Marwo ${name}</h2>
+                        <p>Farriintaadii oo ku saabsanayd <b>"${subject}"</b> si guul leh ayaan u helnay.</p>
+                        <p>Waxaan kuugu soo jawaabi doonaa sida ugu dhaqsaha badan ee suuragalka ah.</p>
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                        <p style="font-size: 0.8rem; color: #666;">Fariintan waxaa soo dirtay nidaamka portfolio-ga Muad Ahmed.</p>
+                    </div>
+                `
+            });
+        } catch (emailErr) {
+            console.error('Email failed to send:', emailErr);
+        }
 
         res.status(201).json({
             success: true,
