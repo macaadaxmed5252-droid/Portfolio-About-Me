@@ -1,9 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Quote, Star, User, MessageSquare, Loader2, Sparkles, Send, X, CheckCircle2, Camera, Building2, Briefcase } from "lucide-react";
+import { Quote, Star, User, MessageSquare, Loader2, Sparkles, Send, X, CheckCircle2, Camera, Building2, Briefcase, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { testimonialsAPI } from "@/lib/api";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
 
 interface Testimonial {
     _id: string;
@@ -22,6 +21,12 @@ const Testimonials = () => {
     const [submitting, setSubmitting] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [showThankYou, setShowThankYou] = useState(false);
+    
+    // Carousel State
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = useState({
@@ -35,9 +40,41 @@ const Testimonials = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+    // Responsive items count
+    const getVisibleItems = useCallback(() => {
+        if (windowWidth >= 1280) return 3;
+        if (windowWidth >= 768) return 2;
+        return 1;
+    }, [windowWidth]);
+
+    const visibleItemsCount = getVisibleItems();
+
     useEffect(() => {
         fetchTestimonials();
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Carousel Navigation
+    const nextSlide = useCallback(() => {
+        if (testimonials.length === 0) return;
+        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, [testimonials.length]);
+
+    const prevSlide = useCallback(() => {
+        if (testimonials.length === 0) return;
+        setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    }, [testimonials.length]);
+
+    // Autoplay logic
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isAutoPlaying && testimonials.length > 0 && !showForm && !showThankYou) {
+            interval = setInterval(nextSlide, 5000);
+        }
+        return () => clearInterval(interval);
+    }, [isAutoPlaying, testimonials.length, nextSlide, showForm, showThankYou]);
 
     // Disable body scroll when modal is open
     useEffect(() => {
@@ -54,7 +91,8 @@ const Testimonials = () => {
     const fetchTestimonials = async () => {
         try {
             const res = await testimonialsAPI.getApproved();
-            setTestimonials(res.data.data);
+            const data = res.data.data;
+            setTestimonials(data);
         } catch (err) {
             console.error("Failed to fetch testimonials", err);
         } finally {
@@ -108,6 +146,17 @@ const Testimonials = () => {
         }
     };
 
+    // Helper to get circular indices for infinite look
+    const getVisibleTestimonials = () => {
+        if (testimonials.length === 0) return [];
+        const items = [];
+        for (let i = 0; i < visibleItemsCount + 2; i++) {
+            const index = (currentIndex + i) % testimonials.length;
+            items.push({ ...testimonials[index], uniqueKey: `${testimonials[index]._id}-${index}-${i}` });
+        }
+        return items;
+    };
+
     return (
         <section id="testimonials" className="py-24 relative overflow-hidden bg-background selection:bg-primary/30">
             {/* Background Decorations */}
@@ -142,6 +191,144 @@ const Testimonials = () => {
                         <Plus size={16} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
                         <span>Give Feedback</span>
                     </button>
+                </div>
+
+                {/* --- CAROUSEL SECTION --- */}
+                <div 
+                    className="relative px-4 md:px-12"
+                    onMouseEnter={() => setIsAutoPlaying(false)}
+                    onMouseLeave={() => setIsAutoPlaying(true)}
+                >
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-24">
+                            <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+                            <span className="text-[10px] font-black tracking-widest text-primary uppercase animate-pulse">Syncing Testimonials...</span>
+                        </div>
+                    ) : testimonials.length > 0 ? (
+                        <>
+                            <div className="overflow-hidden py-8 -mx-4">
+                                <motion.div 
+                                    className="flex gap-6 px-4"
+                                    animate={{ x: 0 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                >
+                                    {testimonials.map((testimonial, idx) => {
+                                        // This is a simplified carousel for clarity, 
+                                        // showing all items with layout transition or specific window
+                                        const isVisible = (idx >= currentIndex && idx < currentIndex + visibleItemsCount) || 
+                                                         (currentIndex + visibleItemsCount > testimonials.length && idx < (currentIndex + visibleItemsCount) % testimonials.length);
+                                        
+                                        return (
+                                            <AnimatePresence mode="popLayout" key={testimonial._id}>
+                                                {isVisible && (
+                                                    <motion.div
+                                                        layout
+                                                        initial={{ opacity: 0, scale: 0.9, x: 50 }}
+                                                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.9, x: -50 }}
+                                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                        className="min-w-full md:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)]"
+                                                    >
+                                                        <div className="group relative h-full bg-card/40 dark:bg-card/20 border border-border/60 p-8 rounded-[2.5rem] flex flex-col transition-all duration-500 hover:border-primary/40 shadow-xl shadow-black/[0.02] dark:shadow-none hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] backdrop-blur-md">
+                                                            <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
+                                                                <Quote size={40} />
+                                                            </div>
+
+                                                            <div className="flex items-center gap-4 mb-6">
+                                                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 bg-primary/5 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                                                                    {testimonial.userImage ? (
+                                                                        <img src={testimonial.userImage} alt={testimonial.username} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        <User size={28} className="text-primary/40" />
+                                                                    )}
+                                                                </div>
+                                                                <div className="min-w-0">
+                                                                    <h4 className="font-black text-foreground uppercase tracking-tight text-sm truncate">{testimonial.username}</h4>
+                                                                    <div className="flex flex-col gap-0.5">
+                                                                        {testimonial.position && (
+                                                                            <div className="flex items-center gap-1.5 text-[8px] font-black text-primary/60 uppercase tracking-widest truncate">
+                                                                                <Briefcase size={8} /> {testimonial.position}
+                                                                            </div>
+                                                                        )}
+                                                                        {testimonial.company && (
+                                                                            <div className="flex items-center gap-1.5 text-[8px] font-black text-muted-foreground uppercase tracking-widest truncate">
+                                                                                <Building2 size={8} /> {testimonial.company}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex gap-0.5 mb-4">
+                                                                {[...Array(5)].map((_, i) => (
+                                                                    <Star
+                                                                        key={i}
+                                                                        size={12}
+                                                                        className={`${i < testimonial.rating ? "text-primary fill-primary" : "text-muted-foreground/20"}`}
+                                                                    />
+                                                                ))}
+                                                            </div>
+
+                                                            <p className="text-muted-foreground text-[11px] leading-relaxed font-bold uppercase tracking-tight opacity-70 flex-grow py-2">
+                                                                "{testimonial.comment}"
+                                                            </p>
+
+                                                            <div className="mt-8 pt-6 border-t border-border/40 flex items-center justify-between">
+                                                                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-[8px] font-black uppercase tracking-widest text-emerald-500">
+                                                                    <CheckCircle2 size={10} /> Verified Identity
+                                                                </span>
+                                                                <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/30">
+                                                                    {new Date(testimonial.createdAt).toLocaleDateString()}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        );
+                                    })}
+                                </motion.div>
+                            </div>
+
+                            {/* Navigation Controls */}
+                            <div className="flex items-center justify-center gap-6 mt-12">
+                                <button 
+                                    onClick={prevSlide}
+                                    className="p-4 bg-card border border-border/50 rounded-2xl text-foreground hover:text-primary hover:border-primary/50 transition-all active:scale-90 shadow-lg"
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+
+                                {/* Pagination Dots */}
+                                <div className="flex gap-2">
+                                    {testimonials.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setCurrentIndex(idx)}
+                                            className={`h-1.5 rounded-full transition-all duration-500 ${
+                                                idx === currentIndex 
+                                                ? "w-8 bg-primary" 
+                                                : "w-2 bg-muted-foreground/20 hover:bg-muted-foreground/40"
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+
+                                <button 
+                                    onClick={nextSlide}
+                                    className="p-4 bg-card border border-border/50 rounded-2xl text-foreground hover:text-primary hover:border-primary/50 transition-all active:scale-90 shadow-lg"
+                                >
+                                    <ChevronRight size={20} />
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center py-20 opacity-40">
+                            <Sparkles size={48} className="mx-auto mb-4 text-primary/20" />
+                            <h3 className="text-xl font-black uppercase tracking-tighter">Null Signals</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Historical data repository is currently empty.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Testimonial Form Modal */}
@@ -310,80 +497,6 @@ const Testimonials = () => {
                         </div>
                     )}
                 </AnimatePresence>
-
-                {/* Testimonials Grid */}
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                        <span className="text-[10px] font-black tracking-widest text-primary uppercase animate-pulse">Loading Feedback...</span>
-                    </div>
-                ) : testimonials.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {testimonials.map((testimonial, index) => (
-                            <motion.div
-                                key={testimonial._id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="group relative h-full bg-card dark:bg-card/30 border border-border/60 p-8 rounded-[2.5rem] flex flex-col transition-all duration-500 hover:border-primary/40 shadow-xl shadow-black/[0.02] dark:shadow-none"
-                            >
-                                <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
-                                    <Quote size={40} />
-                                </div>
-
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/20 bg-primary/5 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                                        {testimonial.userImage ? (
-                                            <img src={testimonial.userImage} alt={testimonial.username} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <User size={28} className="text-primary/40" />
-                                        )}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <h4 className="font-black text-foreground uppercase tracking-tight text-sm truncate">{testimonial.username}</h4>
-                                        <div className="flex flex-col gap-0.5">
-                                            {testimonial.position && (
-                                                <div className="flex items-center gap-1.5 text-[8px] font-black text-primary/60 uppercase tracking-widest truncate">
-                                                    <Briefcase size={8} /> {testimonial.position}
-                                                </div>
-                                            )}
-                                            {testimonial.company && (
-                                                <div className="flex items-center gap-1.5 text-[8px] font-black text-muted-foreground uppercase tracking-widest truncate">
-                                                    <Building2 size={8} /> {testimonial.company}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-0.5 mb-4">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            size={12}
-                                            className={`${i < testimonial.rating ? "text-primary fill-primary" : "text-muted-foreground/20"}`}
-                                        />
-                                    ))}
-                                </div>
-
-                                <p className="text-muted-foreground text-[11px] leading-relaxed font-medium italic opacity-90 flex-grow">
-                                    "{testimonial.comment}"
-                                </p>
-
-                                <div className="mt-8 pt-6 border-t border-border/40 flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
-                                    <span className="flex items-center gap-1"><CheckCircle2 size={10} className="text-emerald-500" /> Verified Record</span>
-                                    <span>{new Date(testimonial.createdAt).toLocaleDateString()}</span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20 opacity-50">
-                        <Sparkles size={40} className="mx-auto mb-4 text-primary/20" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Weli ma jiraan wax ra'yi ah oo la soo saaray.</p>
-                    </div>
-                )}
             </div>
         </section>
     );

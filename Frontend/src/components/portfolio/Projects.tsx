@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, Layers, ArrowUpRight, Loader2, Code2, Sparkles, Box, ShieldCheck } from "lucide-react";
+import { ExternalLink, Github, ArrowUpRight, Loader2, Code2, Sparkles, Box, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { projectsAPI } from "@/lib/api";
 
